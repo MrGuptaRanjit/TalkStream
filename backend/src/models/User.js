@@ -50,8 +50,7 @@ const userSchema = new mongoose.Schema({
 
 },{timestamps:true});
 
-// pre hook
-//TODO: Explain later
+// pre-save hook
 userSchema.pre("save", async function(next) {
     if(!this.isModified("password")) return next();
 
@@ -63,6 +62,11 @@ userSchema.pre("save", async function(next) {
         next(error)
     }
 })
+
+userSchema.methods.matchPassword = async function(enteredPassword) {
+    const isPasswordCorrect = await bcrypt.compare(enteredPassword, this.password);
+    return isPasswordCorrect;
+}
 
 // create a model based on the User Schema
 const User = mongoose.model("User", userSchema);
