@@ -140,7 +140,7 @@ export async function onboard(req,res) {
 
     if (!updatedUser) return res.status(404).json({ message: "User Not Found" });
 
-    // UPADTE THE USER INFO IN STREAM
+    // UPDATE THE USER INFO IN STREAM
     try {
       await upsertStreamUser({
         id: updatedUser._id.toString(),
