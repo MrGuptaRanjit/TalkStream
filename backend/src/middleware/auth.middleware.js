@@ -7,6 +7,9 @@ export const protectRoute = async (req, res, next)=>{
         const token = req.cookies.jwt;
 
         if(!token){
+            if (req.path === "/me") {
+        return res.status(200).json({ user: null });
+      }
             return res.status(401).json({message: "Unauthorized- No token provided"});
         }
 
