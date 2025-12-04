@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import useAuthUser from "../hooks/useAuthUser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { completeOnboarding } from "../lib/api";
-import { CameraIcon, LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from "lucide-react";
+import { CameraIcon, LoaderIcon, MapPinIcon, RadioIcon, ShuffleIcon } from "lucide-react";
 import { LANGUAGES } from "../constants";
 import toast from "react-hot-toast";
 
@@ -199,7 +199,7 @@ const OnboardingPage = () => {
               {
                 !isPending ? (
                   <>
-                  <ShipWheelIcon className="size-5 mr-2" />
+                  <RadioIcon className="size-5 mr-2" />
                   Complete Onboarding
                   </>
                 ) : (
