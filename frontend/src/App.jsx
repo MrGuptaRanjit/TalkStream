@@ -30,7 +30,6 @@ const App = () => {
   return (
     <div className=" h-screen" data-theme={theme}>
       <Routes>
-        <Route path="/about" element={<AboutPage />} />
         <Route
           path="/"
           element={
@@ -81,6 +80,18 @@ const App = () => {
             isAuthenticated && isOnboarded ? (
               <Layout showSidebar={true}>
                 <FriendsPage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            isAuthenticated && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <AboutPage />
               </Layout>
             ) : (
               <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
