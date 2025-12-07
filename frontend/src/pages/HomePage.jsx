@@ -73,7 +73,9 @@ const HomePage = () => {
           <NoFriendFound />
         ) : (
           <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {friends.map((friend) => (
+            {friends
+            .filter(friend => friend !== null)
+            .map((friend) => (
               <FriendCard key={friend._id} friend={friend} />
             ))}
           </div>

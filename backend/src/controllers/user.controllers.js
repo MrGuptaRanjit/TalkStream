@@ -6,10 +6,12 @@ export async function getRecommendedUsers(req, res) {
     const currentUserId = req.user.id;
     const currentUser = req.user;
 
+        const validFriendIds = (currentUser.friends || []).filter(id => id != null);
+
     const recommendedUsers = await User.find({
       $and: [
         { _id: { $ne: currentUserId } }, // (ne means not equal to) exclude current user
-        { _id: { $nin: currentUser.friends } }, // (nin means not in) exclude current user's friends
+        { _id: { $nin: validFriendIds } }, // (nin means not in) exclude current user's friends
         { isOnboarded: true },
       ],
     });
@@ -29,7 +31,9 @@ export async function getMyFriends(req, res) {
         "fullName profilePic nativeLanguage learningLanguage"
       );
 
-    res.status(200).json(user.friends);
+      const validFriends = user.friends.filter(f => f !== null);
+
+    res.status(200).json(validFriends);
   } catch (error) {
     console.log("Error in getMyFriends controller", error.message);
     res.status(500).json({ message: "Internal Server Error " });
@@ -125,15 +129,18 @@ export async function acceptFriendRequest(req, res) {
 
 export async function getFriendRequests(req,res) {
     try {
-        const incomingReqs = await FriendRequest.find({
+        const incomingReqsRaw = await FriendRequest.find({
             recipient: req.user.id,
             status: "pending",
         }).populate("sender", "fullName profilePic nativeLanguage learningLanguage");
 
-        const acceptedReqs = await FriendRequest.find({
+        const acceptedReqsRaw = await FriendRequest.find({
             sender: req.user.id,
             status: "accepted",
         }).populate("recipient", "fullName profilePic");
+
+        const incomingReqs = incomingReqsRaw.filter(r => r.sender !== null);
+    const acceptedReqs = acceptedReqsRaw.filter(r => r.recipient !== null);
 
         res.status(200).json({ incomingReqs, acceptedReqs })
     } catch (error) {
@@ -144,11 +151,12 @@ export async function getFriendRequests(req,res) {
 
 export async function getOngoingFriends(req,res) {
     try {
-        const outgoingRequests = await FriendRequest.find({
+        const outgoingRequestsRaw = await FriendRequest.find({
             sender: req.user.id,
             status: "pending",
         }).populate("recipient", "fullName profilePic nativeLanguage learningLanguage");
 
+            const outgoingRequests = outgoingRequestsRaw.filter(r => r.recipient !== null);
         res.status(200).json(outgoingRequests);
 
     } catch (error) {
